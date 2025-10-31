@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translator Bahasa Semende</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 30%, #6BCB77 60%, #4D9D62 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .nature-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .clouds {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 100%;
+            font-size: 3em;
+            opacity: 0.7;
+            animation: float 30s infinite linear;
+        }
+
+        .mountains {
+            position: absolute;
+            bottom: 100px;
+            left: 0;
+            width: 100%;
+            font-size: 4em;
+            opacity: 0.3;
+        }
+
+        .trees {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            width: 100%;
+            font-size: 2.5em;
+            opacity: 0.4;
+        }
+
+        .waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            font-size: 2em;
+            opacity: 0.5;
+            animation: wave 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 10;
+        }
+
+        .tab-btn {
+            padding: 15px 40px;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            border: 2px solid white;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #4D9D62;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #4D9D62;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .translator-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-box, .output-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .box-title {
+            font-weight: bold;
+            color: #4D9D62;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #98D8C8;
+            border-radius: 15px;
+            font-size: 1em;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s;
+            font-family: inherit;
+            background: white;
+        }
+
+        textarea:focus {
+            border-color: #4D9D62;
+            box-shadow: 0 0 0 3px rgba(77, 157, 98, 0.1);
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            border-radius: 12px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-translate {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #6BCB77 0%, #4D9D62 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(107, 203, 119, 0.3);
+        }
+
+        .btn-translate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 203, 119, 0.4);
+        }
+
+        .btn-clear {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-clear:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #98D8C8;
+            border-radius: 12px;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-input:focus {
+            border-color: #4D9D62;
+            box-shadow: 0 0 0 3px rgba(77, 157, 98, 0.1);
+        }
+
+        .btn-add, .btn-login, .btn-reset {
+            background: linear-gradient(135deg, #6BCB77 0%, #4D9D62 100%);
+            color: white;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(107, 203, 119, 0.3);
+        }
+
+        .btn-add:hover, .btn-login:hover, .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 203, 119, 0.4);
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 20px;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .vocabulary-list {
+            margin-top: 40px;
+        }
+
+        .vocab-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .vocab-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4D9D62;
+        }
+
+        .vocab-count {
+            background: linear-gradient(135deg, #6BCB77 0%, #4D9D62 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .vocab-items {
+            display: grid;
+            gap: 15px;
+        }
+
+        .vocab-item {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .vocab-item:hover {
+            background: linear-gradient(135deg, #e0f2fe 0%, #d0eaff 100%);
+            transform: translateX(5px);
+            border-color: #6BCB77;
+        }
+
+        .vocab-content {
+            flex: 1;
+        }
+
+        .vocab-semende {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4D9D62;
+            margin-bottom: 5px;
+        }
+
+        .vocab-indonesia {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFE8CC 100%);
+            border: 2px solid #FFB84D;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255, 184, 77, 0.2);
+        }
+
+        .info-box-title {
+            font-weight: bold;
+            color: #CC7A00;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box-text {
+            color: #CC7A00;
+            line-height: 1.6;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #98D8C8;
+            border-radius: 12px;
+            font-size: 1em;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #4D9D62;
+            box-shadow: 0 0 0 3px rgba(77, 157, 98, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .login-container, .reset-container {
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .login-icon {
+            text-align: center;
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .admin-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4D9D62;
+            font-weight: bold;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .forgot-password a {
+            color: #4D9D62;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .forgot-password a:hover {
+            color: #6BCB77;
+            text-decoration: underline;
+        }
+
+        .verification-steps {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #4D9D62;
+            font-size: 1.1em;
+        }
+
+        .cloud-status {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2E7D32;
+            font-weight: bold;
+        }
+
+        .btn-refresh:hover {
+            background: #2E7D32 !important;
+            color: white !important;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .translator-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nature-elements">
+        <div class="clouds">☁️ ☁️ ☁️ ☁️ ☁️ ☁️ ☁️</div>
+        <div class="mountains">🏔️ ⛰️ 🏔️ ⛰️ 🏔️ ⛰️ 🏔️ ⛰️ 🏔️</div>
+        <div class="trees">🌲 🌳 🌲 🌳 🌲 🌳 🌲 🌳 🌲 🌳 🌲 🌳 🌲 🌳 🌲</div>
+        <div class="waves">🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊</div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" id="userTab">🌍 Halaman User</button>
+        <button class="tab-btn" id="adminTab">⚙️ Halaman Admin</button>
+    </div>
+
+    <div id="userPage" class="container page active">
+        <h1>🗣️ Translator Bahasa Semende 🏞️</h1>
+        <p class="subtitle">Terjemahkan dari Bahasa Semende ke Bahasa Indonesia</p>
+
+        <div class="cloud-status">
+            ☁️ Data tersimpan di cloud - Dapat diakses dari perangkat manapun
+            <button class="btn-refresh" id="refreshBtn" style="margin-left: 15px; padding: 8px 20px; background: white; color: #2E7D32; border: 2px solid #2E7D32; border-radius: 8px; cursor: pointer; font-weight: bold;">🔄 Refresh Data</button>
+        </div>
+
+        <div class="info-box">
+            <div class="info-box-title">🌄 Tentang Bahasa Semende</div>
+            <div class="info-box-text">
+                Bahasa Semende adalah bahasa daerah dari wilayah Semende, Sumatera Selatan. 
+                Aplikasi ini membantu melestarikan bahasa Semende dengan menyediakan translator sederhana.
+                Mari kita jaga warisan budaya kita! 🌿
+            </div>
+        </div>
+
+        <div id="userLoadingBox" class="loading" style="display:none;">⏳ Memuat kosakata...</div>
+
+        <div class="translator-section">
+            <div class="input-box">
+                <div class="box-title">🎋 Bahasa Semende</div>
+                <textarea id="inputText" placeholder="Ketik teks dalam Bahasa Semende..."></textarea>
+            </div>
+
+            <div class="output-box">
+                <div class="box-title">🇮🇩 Bahasa Indonesia</div>
+                <textarea id="outputText" placeholder="Hasil terjemahan akan muncul di sini..." readonly></textarea>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-translate" id="translateBtn">🔄 Terjemahkan</button>
+            <button class="btn-clear" id="clearBtn">🗑️ Hapus</button>
+        </div>
+    </div>
+
+    <div id="loginPage" class="container page">
+        <div class="login-container">
+            <div class="login-icon">🔐</div>
+            <h1>Login Admin 🌿</h1>
+            <p class="subtitle">Masukkan kredensial untuk mengakses halaman admin</p>
+
+            <div id="loginAlertBox"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">👤 Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Masukkan username" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🔑 Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Masukkan password" required>
+                </div>
+
+                <button type="submit" class="btn-login">🔓 Login</button>
+            </form>
+
+            <div class="forgot-password">
+                <a href="#" id="forgotPasswordLink">🔄 Lupa Password? Reset di sini</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="resetPage" class="container page">
+        <div class="reset-container">
+            <div class="login-icon">🔐</div>
+            <h1>Reset Password 🔄</h1>
+            <p class="subtitle">Verifikasi 2 langkah untuk keamanan akun Anda</p>
+
+            <div id="resetAlertBox"></div>
+
+            <div class="verification-steps">
+                <div style="font-weight: bold; color: #1565C0; margin-bottom: 10px;">📋 Langkah Verifikasi:</div>
+                <div style="color: #1565C0; line-height: 1.8;">
+                    1️⃣ Masukkan kode verifikasi pertama<br>
+                    2️⃣ Masukkan kode verifikasi kedua<br>
+                    3️⃣ Buat username dan password baru
+                </div>
+            </div>
+
+            <form id="resetForm">
+                <div class="form-group">
+                    <label class="form-label">🔢 Kode Verifikasi 1</label>
+                    <input type="text" id="verifyCode1" class="form-input" placeholder="Masukkan kode verifikasi pertama" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🔢 Kode Verifikasi 2</label>
+                    <input type="text" id="verifyCode2" class="form-input" placeholder="Masukkan kode verifikasi kedua" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">👤 Username Baru</label>
+                    <input type="text" id="newUsername" class="form-input" placeholder="Masukkan username baru" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🔑 Password Baru</label>
+                    <input type="password" id="newPassword" class="form-input" placeholder="Masukkan password baru" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">🔑 Konfirmasi Password</label>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Konfirmasi password baru" required>
+                </div>
+
+                <button type="submit" class="btn-reset">✅ Reset Password</button>
+            </form>
+
+            <div class="forgot-password">
+                <a href="#" id="backToLoginLink">⬅️ Kembali ke Login</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPage" class="container page">
+        <div class="admin-header">
+            <div>
+                <h1 style="text-align: left; margin: 0;">⚙️ Admin Panel 🌿</h1>
+                <p class="subtitle" style="text-align: left; margin: 5px 0 0 0;">Kelola kosakata Bahasa Semende</p>
+            </div>
+            <div>
+                <div class="admin-user">👤 <span id="adminUsername"></span></div>
+                <button class="btn-logout" id="logoutBtn">🚪 Logout</button>
+            </div>
+        </div>
+
+        <div class="cloud-status">☁️ Semua perubahan otomatis tersimpan di cloud</div>
+
+        <div id="alertBox"></div>
+        <div id="adminLoadingBox" class="loading" style="display:none;">⏳ Memuat kosakata...</div>
+
+        <form id="vocabForm">
+            <div class="form-group">
+                <label class="form-label">🎋 Kata dalam Bahasa Semende</label>
+                <input type="text" id="semendeWord" class="form-input" placeholder="Contoh: au" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">🇮🇩 Arti dalam Bahasa Indonesia</label>
+                <input type="text" id="indonesiaWord" class="form-input" placeholder="Contoh: iya" required>
+            </div>
+
+            <button type="submit" class="btn-add">➕ Tambah Kosakata</button>
+        </form>
+
+        <div class="vocabulary-list">
+            <div class="vocab-header">
+                <div class="vocab-title">📝 Daftar Kosakata</div>
+                <div class="vocab-count" id="adminVocabCount">0 Kata</div>
+            </div>
+            <div class="search-box">
+                <input type="text" class="search-input" id="adminSearchInput" placeholder="🔍 Cari kosakata...">
+            </div>
+            <div class="vocab-items" id="adminVocabList"></div>
+        </div>
+    </div>
+
+    <script>
+        var semendeDict = {};
+        var isLoggedIn = false;
+        var adminUser = '';
+        var ADMIN_USERNAME = 'wawa19oke';
+        var ADMIN_PASSWORD = 'SalmaL19';
+        var VERIFY_CODE_1 = '2123500022riantai';
+        var VERIFY_CODE_2 = 'wawaanakumakbak';
+        var STORAGE_KEY = 'semende-vocabulary';
+
+        async function loadVocabulary() {
+            try {
+                var result = await window.storage.get(STORAGE_KEY, true);
+                if (result && result.value) {
+                    semendeDict = JSON.parse(result.value);
+                } else {
+                    semendeDict = {
+                        'au': 'iya',
+                        'dak': 'tidak',
+                        'kau': 'kamu',
+                        'aku': 'saya'
+                    };
+                    await saveVocabulary();
+                }
+            } catch (error) {
+                console.log('Memuat kosakata default');
+                semendeDict = {
+                    'au': 'iya',
+                    'dak': 'tidak',
+                    'kau': 'kamu',
+                    'aku': 'saya'
+                };
+            }
+        }
+
+        async function saveVocabulary() {
+            try {
+                await window.storage.set(STORAGE_KEY, JSON.stringify(semendeDict), true);
+                return true;
+            } catch (error) {
+                console.error('Gagal menyimpan ke cloud:', error);
+                return false;
+            }
+        }
+
+        async function initializeApp() {
+            document.getElementById('userLoadingBox').style.display = 'block';
+            await loadVocabulary();
+            document.getElementById('userLoadingBox').style.display = 'none';
+        }
+
+        document.getElementById('userTab').addEventListener('click', showUserPage);
+        document.getElementById('adminTab').addEventListener('click', function() {
+            if (isLoggedIn) {
+                showAdminPage();
+            } else {
+                showLoginPage();
+            }
+        });
+        document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showResetPage();
+        });
+        document.getElementById('backToLoginLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoginPage();
+        });
+
+        function showUserPage() {
+            document.getElementById('userPage').classList.add('active');
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('resetPage').classList.remove('active');
+            document.getElementById('adminPage').classList.remove('active');
+            document.getElementById('userTab').classList.add('active');
+            document.getElementById('adminTab').classList.remove('active');
+        }
+
+        function showLoginPage() {
+            document.getElementById('loginPage').classList.add('active');
+            document.getElementById('userPage').classList.remove('active');
+            document.getElementById('resetPage').classList.remove('active');
+            document.getElementById('adminPage').classList.remove('active');
+            document.getElementById('userTab').classList.remove('active');
+            document.getElementById('adminTab').classList.add('active');
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginAlertBox').innerHTML = '';
+        }
+
+        function showResetPage() {
+            document.getElementById('resetPage').classList.add('active');
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('userPage').classList.remove('active');
+            document.getElementById('adminPage').classList.remove('active');
+            document.getElementById('userTab').classList.remove('active');
+            document.getElementById('adminTab').classList.add('active');
+            document.getElementById('resetForm').reset();
+            document.getElementById('resetAlertBox').innerHTML = '';
+        }
+
+        async function showAdminPage() {
+            document.getElementById('adminPage').classList.add('active');
+            document.getElementById('userPage').classList.remove('active');
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('resetPage').classList.remove('active');
+            document.getElementById('adminTab').classList.add('active');
+            document.getElementById('userTab').classList.remove('active');
+            document.getElementById('adminUsername').textContent = adminUser;
+            document.getElementById('adminLoadingBox').style.display = 'block';
+            await loadVocabulary();
+            document.getElementById('adminLoadingBox').style.display = 'none';
+            displayAdminVocabulary();
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var username = document.getElementById('username').value.trim();
+            var password = document.getElementById('password').value;
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                isLoggedIn = true;
+                adminUser = username;
+                showAdminPage();
+            } else {
+                showLoginAlert('Username atau password salah! ❌', 'error');
+            }
+        });
+
+        document.getElementById('resetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var code1 = document.getElementById('verifyCode1').value.trim();
+            var code2 = document.getElementById('verifyCode2').value.trim();
+            var newUser = document.getElementById('newUsername').value.trim();
+            var newPass = document.getElementById('newPassword').value;
+            var confirmPass = document.getElementById('confirmPassword').value;
+
+            if (code1 !== VERIFY_CODE_1) {
+                showResetAlert('Kode verifikasi 1 salah! ❌', 'error');
+                return;
+            }
+            if (code2 !== VERIFY_CODE_2) {
+                showResetAlert('Kode verifikasi 2 salah! ❌', 'error');
+                return;
+            }
+            if (newPass !== confirmPass) {
+                showResetAlert('Password dan konfirmasi password tidak sama! ❌', 'error');
+                return;
+            }
+            if (newUser.length < 5) {
+                showResetAlert('Username minimal 5 karakter! ❌', 'error');
+                return;
+            }
+            if (newPass.length < 6) {
+                showResetAlert('Password minimal 6 karakter! ❌', 'error');
+                return;
+            }
+            ADMIN_USERNAME = newUser;
+            ADMIN_PASSWORD = newPass;
+            showResetAlert('Password berhasil direset! Silakan login dengan kredensial baru ✅', 'success');
+            setTimeout(showLoginPage, 2000);
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Apakah Anda yakin ingin logout? 🚪')) {
+                isLoggedIn = false;
+                adminUser = '';
+                showUserPage();
+            }
+        });
+
+        function showLoginAlert(msg, type) {
+            var box = document.getElementById('loginAlertBox');
+            box.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
+            setTimeout(function() { box.innerHTML = ''; }, 3000);
+        }
+
+        function showResetAlert(msg, type) {
+            var box = document.getElementById('resetAlertBox');
+            box.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
+            setTimeout(function() { box.innerHTML = ''; }, 3000);
+        }
+
+        function showAlert(msg, type) {
+            var box = document.getElementById('alertBox');
+            box.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
+            setTimeout(function() { box.innerHTML = ''; }, 3000);
+        }
+
+        document.getElementById('vocabForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!isLoggedIn) {
+                showAlert('Anda harus login terlebih dahulu! ❌', 'error');
+                return;
+            }
+            var semendeWord = document.getElementById('semendeWord').value.trim().toLowerCase();
+            var indonesiaWord = document.getElementById('indonesiaWord').value.trim().toLowerCase();
+            if (semendeWord && indonesiaWord) {
+                if (semendeDict[semendeWord]) {
+                    showAlert('⚠️ Kosakata "' + semendeWord + '" sudah ditambahkan sebelumnya dengan arti "' + semendeDict[semendeWord] + '"', 'error');
+                    return;
+                }
+                semendeDict[semendeWord] = indonesiaWord;
+                var saved = await saveVocabulary();
+                if (saved) {
+                    showAlert('✅ Berhasil menambahkan: "' + semendeWord + '" → "' + indonesiaWord + '" (Tersimpan di cloud)', 'success');
+                } else {
+                    showAlert('⚠️ Ditambahkan lokal: "' + semendeWord + '" → "' + indonesiaWord + '" (Gagal simpan ke cloud)', 'error');
+                }
+                document.getElementById('vocabForm').reset();
+                displayAdminVocabulary();
+            }
+        });
+
+        async function deleteVocab(word) {
+            if (!isLoggedIn) {
+                alert('Anda harus login terlebih dahulu!');
+                return;
+            }
+            if (confirm('Apakah Anda yakin ingin menghapus kata "' + word + '"?')) {
+                delete semendeDict[word];
+                var saved = await saveVocabulary();
+                if (saved) {
+                    showAlert('Kata "' + word + '" telah dihapus ✅ (Tersimpan di cloud)', 'success');
+                } else {
+                    showAlert('⚠️ Kata "' + word + '" dihapus lokal (Gagal simpan ke cloud)', 'error');
+                }
+                displayAdminVocabulary();
+            }
+        }
+
+        function displayAdminVocabulary() {
+            var searchQuery = document.getElementById('adminSearchInput').value.toLowerCase();
+            var list = document.getElementById('adminVocabList');
+            var count = document.getElementById('adminVocabCount');
+            var entries = Object.keys(semendeDict).map(function(key) {
+                return [key, semendeDict[key]];
+            });
+            if (searchQuery) {
+                entries = entries.filter(function(item) {
+                    return item[0].includes(searchQuery) || item[1].includes(searchQuery);
+                });
+            }
+            count.textContent = entries.length + ' Kata';
+            if (entries.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div style="font-size: 1.2em; color: #999;">Belum ada kosakata</div></div>';
+                return;
+            }
+            entries.sort(function(a, b) {
+                return a[0].localeCompare(b[0]);
+            });
+            var html = '';
+            for (var i = 0; i < entries.length; i++) {
+                html += '<div class="vocab-item">';
+                html += '<div class="vocab-content">';
+                html += '<div class="vocab-semende">' + entries[i][0] + '</div>';
+                html += '<div class="vocab-indonesia">→ ' + entries[i][1] + '</div>';
+                html += '</div>';
+                html += '<button class="btn-delete" onclick="deleteVocab(\'' + entries[i][0] + '\')">🗑️ Hapus</button>';
+                html += '</div>';
+            }
+            list.innerHTML = html;
+        }
+
+        document.getElementById('adminSearchInput').addEventListener('keyup', displayAdminVocabulary);
+
+        document.getElementById('translateBtn').addEventListener('click', function() {
+            var input = document.getElementById('inputText').value.toLowerCase().trim();
+            var output = document.getElementById('outputText');
+            if (!input) {
+                alert('Silakan masukkan teks yang ingin diterjemahkan! 📝');
+                return;
+            }
+            var words = input.split(' ');
+            var result = [];
+            for (var i = 0; i < words.length; i++) {
+                var word = words[i];
+                var clean = word.replace(/[.,!?;:]/g, '');
+                var punct = word.match(/[.,!?;:]/g);
+                var trans = semendeDict[clean] || clean;
+                result.push(punct ? trans + punct.join('') : trans);
+            }
+            output.value = result.join(' ');
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+        });
+
+        initializeApp();
+    </script>
+</body>
+</html>
